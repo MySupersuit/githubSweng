@@ -1,16 +1,19 @@
+import time
+
 from github import Github
-import plotly.express as px
+#import plotly.express as px
 import plotly.graph_objects as go
 import operator
 
 ownerName = "tensorflow"
 repoName = "tensorflow"
 
-def get_top_n_authors_to_repo(N, repo):
+
+def get_top_n_authors_to_repo(N, nCommits, repo): # from past nCommits commits
     authors = {}
     commits = repo.get_commits()
 #   for commit in commits:
-    for i in range(10000): #range(commits.totalCount):
+    for i in range(nCommits): #range(commits.totalCount):
         if commits[i].author:
             if commits[i].author.login in authors:
                 authors[commits[i].author.login] = authors[commits[i].author.login] + 1
@@ -83,16 +86,20 @@ def commits_finished(commits_dict, N):
 
 
 def main():
-    g = Github("caac5ca822f0a9d0274f4c2c346e25e85981fb0a")
+    g = Github("2e828516d36b5c317c601a5c5160ca5882eef366")
     ownerRepo = ownerName + "/" + repoName
     repo = g.get_repo(ownerRepo)
     # conts = get_top_n_contributors_to_repo(1000, repo)
     # for cont in conts:
     #     print(cont)
-    authrs = get_top_n_authors_to_repo(10, repo)
-    print("sup")
+    start = time.time()
+    authrs = get_top_n_authors_to_repo(10, 1000, repo)
+    end = time.time()
+    print(end - start)
     for auth in authrs:
         print(auth)
+    # Then for each author in here, find 10 commits + average out churn/impact then add to graph?
+
     # contributors = get_top_n_contributors_to_repo(2, repo)
     # commits_dict = get_commits_from_top_contributors(2, conts, repo)
 
