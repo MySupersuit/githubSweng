@@ -1,46 +1,40 @@
+import math
 import time
 
 from github import Github
-#import plotly.express as px
-import plotly.graph_objects as go
+import plotly.express as px
+# import plotly.graph_objects as go
 import operator
+import numpy as np
+import pandas as pd
+import statistics
 
-ownerName = "tensorflow"
-repoName = "tensorflow"
 
-
-def get_top_n_authors_to_repo(N, nCommits, repo): # from past nCommits commits
+def get_top_n_authors_from_last_m_commits(N, m_commits, commits):  # from past nCommits commits
     authors = {}
-    commits = repo.get_commits()
-#   for commit in commits:
-    for i in range(nCommits): #range(commits.totalCount):
+    for i in range(min(m_commits, commits.totalCount)):  # range(commits.totalCount):
         if commits[i].author:
             if commits[i].author.login in authors:
                 authors[commits[i].author.login] = authors[commits[i].author.login] + 1
             else:
                 authors[commits[i].author.login] = 1
     sorted_x = sorted(authors.items(), key=operator.itemgetter(1), reverse=True)
-    nlist = [i[0] for i in sorted_x]
+    # nlist = [i[0] for i in sorted_x]
     print(sorted_x)
 
-    return nlist[:N]
+    # return nlist[:N]
+    return sorted_x[:N]
 
-def get_top_n_contributors_to_repo(N, repo):
-    contributors = repo.get_contributors()
-    contributor_list = []
-    j = 0
-    # while i >= 0:
-    #     if repoName not in contributors[j].login:
-    #         if contributors[j].login not in contributor_list:
-    #             contributor_list.append(contributors[j].login)
-    #     i = i - 1
-    #     j += 1
-    for i in range(contributors.totalCount):
-        if repoName not in contributors[i].login:
-            if contributors[i].login not in contributor_list:
-                contributor_list.append(contributors[i].login)
 
-    return contributor_list
+# def get_top_n_contributors_to_repo(N, repo):
+#     contributors = repo.get_contributors()
+#     contributor_list = []
+#     for i in range(contributors.totalCount):
+#         if repoName not in contributors[i].login:
+#             if contributors[i].login not in contributor_list:
+#                 contributor_list.append(contributors[i].login)
+#
+#     return contributor_list
 
 
 def initialise_commits_dict(contributors):
@@ -59,23 +53,23 @@ def initialise_commits_count_dict(contributors):
 
 
 # N is number of commits from each contributor
-def get_commits_from_top_contributors(N, contributors, repo):
-    commits = repo.get_commits()
+# nCommits to search
+def get_n_commits_from_top_contributors(n, n_commits, contributors, commits):
     commits_dict = initialise_commits_dict(contributors)
-    commits_count_dict = initialise_commits_count_dict(contributors)
-    commits_list = []
-    finished = False
-
-    for i in range(commits.totalCount):
+    for i in range(min(n_commits, commits.totalCount)):
         if commits[i].author:
             if commits[i].author.login in contributors:
-                if len(commits_dict[commits[i].author.login]) < N:
-                    commits_dict[commits[i].author].append(commits[i])
-                    if commits_finished(commits_dict, N):
+                if len(commits_dict[commits[i].author.login]) < n:
+                    commits_dict[commits[i].author.login].append(commits[i])
+                    if commits_finished(commits_dict, n):
                         break
     return commits_dict
 
 
+def print_dict(dicto):
+    for key in dicto:
+        print(key)
+        print(dicto[key])
 
 
 def commits_finished(commits_dict, N):
@@ -100,10 +94,68 @@ def main():
         print(auth)
     # Then for each author in here, find 10 commits + average out churn/impact then add to graph?
 
-    # contributors = get_top_n_contributors_to_repo(2, repo)
-    # commits_dict = get_commits_from_top_contributors(2, conts, repo)
+
+def process_data(data, freq):
+    avg_impacts = []
+    avg_churns = []
+    author_name = []
+    freqs = []
+    prev_std_dev = 0.0
+    std_dev = 0.0
+    for key in data:
+        num_commits = getNumCommits(freq, key)
+        if num_commits <= 4:
+            continue
+        churn = 0
+        impact = 0
+        length = len(data[key])
+
+        for i in range(length):
+            commit = data[key][i]
+            if commit.stats.total == 0:
+                continue
+            #churn_rate = min(commit.stats.additions, commit.stats.deletions) / commit.stats.total
+            churn_rate = (commit.stats.additions - commit.stats.deletions) / commit.stats.total
+            churn = churn + churn_rate
+            impact = commit.stats.total
+        avg_churn = churn / length
+        avg_impact = impact / length
+        if avg_impact > 100:
+            avg_impact = 100
+
+        # pot_impact = avg_impacts
+        # pot_impact.append(avg_impact)
+        # pot_std_dev = statistics.stdev(pot_impact)
+
+        avg_churns.append(avg_churn)
+        avg_impacts.append(avg_impact)
+        author_name.append(key)
+        freqs.append(num_commits)
+
+    data_dict = {'Impact': avg_impacts, 'Churn': avg_churns, 'Author': author_name, "Freqs": freqs}
+    df = pd.DataFrame(data_dict, columns=["Author", "Impact", "Churn", "Freqs"])
+
+    return df
+
+
+def getNumCommits(freqs, name):
+    for f in freqs:
+        if f[0] == name:
+            return f[1]
+    return -1
+
+
+def visualise_data(df):
+    fig = px.scatter(df, x="Impact", y="Churn", size="Freqs",
+                     hover_name="Author", hover_data=["Author"])
+
+    fig.show()
+
 
 main()
+
+# def visualiseData():
+
 # commits_list = []
 # x = 0
 # while len(commits_list) < 10:
