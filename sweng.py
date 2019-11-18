@@ -96,8 +96,6 @@ def process_data(data, freq):
     avg_churns = []
     author_name = []
     freqs = []
-    prev_std_dev = 0.0
-    std_dev = 0.0
     for key in data:
         num_commits = getNumCommits(freq, key)
         if num_commits <= 4:
@@ -118,10 +116,6 @@ def process_data(data, freq):
         avg_impact = impact / length
         if avg_impact > 100:
             avg_impact = 100
-
-        # pot_impact = avg_impacts
-        # pot_impact.append(avg_impact)
-        # pot_std_dev = statistics.stdev(pot_impact)
 
         avg_churns.append(avg_churn)
         avg_impacts.append(avg_impact)
@@ -155,9 +149,6 @@ def main():
     commits_to_search = 1000
     n_authors = 20
     commits_per_author = 5
-
-    # list = [71,49,6,37.3,76.9,17,56,92,154,58,63,24,25151]
-    # print(statistics.stdev(list))
 
     start(git_token, repo_owner, repo_name, commits_to_search,
           n_authors, commits_per_author)
