@@ -74,6 +74,41 @@ def commits_finished(commits_dict, N):
             return False
     return True
 
+
+def start(token, repo_owner, repo_name, commits_to_search,
+          n_authors, commits_per_author):
+    g = Github(token)
+    repo_name = repo_owner + "/" + repo_name
+    repo = g.get_repo(repo_name)
+    commits = repo.get_commits()
+
+    start0 = time.time()
+    authors_freq = get_top_n_authors_from_last_m_commits(n_authors, commits_to_search, commits)
+    end0 = time.time()
+    print(end0 - start0)
+
+    authors = [i[0] for i in authors_freq]
+
+    start1 = time.time()
+    authors_commits = get_n_commits_from_top_contributors(commits_per_author, commits_to_search,
+                                                          authors, commits)
+    end1 = time.time()
+    print(end1 - start1)
+
+    start2 = time.time()
+    df = process_data(authors_commits, authors_freq)
+    end2 = time.time()
+    print(end2 - start2)
+
+    print(df)
+    start3 = time.time()
+    visualise_data(df)
+    end3 = time.time()
+    print(end3 - start3)
+
+    # Then for each author in here, find 10 commits + average out churn/impact then add to graph?
+
+
 def process_data(data, freq):
     avg_impacts = []
     avg_churns = []
