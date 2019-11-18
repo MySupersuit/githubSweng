@@ -1,13 +1,9 @@
-import math
 import time
 
 from github import Github
 import plotly.express as px
-# import plotly.graph_objects as go
 import operator
-import numpy as np
 import pandas as pd
-import statistics
 
 
 def get_top_n_authors_from_last_m_commits(N, m_commits, commits):  # from past nCommits commits
@@ -114,7 +110,7 @@ def process_data(data, freq):
             commit = data[key][i]
             if commit.stats.total == 0:
                 continue
-            #churn_rate = min(commit.stats.additions, commit.stats.deletions) / commit.stats.total
+            # churn_rate = min(commit.stats.additions, commit.stats.deletions) / commit.stats.total
             churn_rate = (commit.stats.additions - commit.stats.deletions) / commit.stats.total
             churn = churn + churn_rate
             impact = commit.stats.total
@@ -152,55 +148,19 @@ def visualise_data(df):
     fig.show()
 
 
+def main():
+    git_token = ""
+    repo_owner = "mysupersuit"
+    repo_name = "githubsweng"
+    commits_to_search = 1000
+    n_authors = 20
+    commits_per_author = 5
+
+    # list = [71,49,6,37.3,76.9,17,56,92,154,58,63,24,25151]
+    # print(statistics.stdev(list))
+
+    start(git_token, repo_owner, repo_name, commits_to_search,
+          n_authors, commits_per_author)
+
+
 main()
-
-# def visualiseData():
-
-# commits_list = []
-# x = 0
-# while len(commits_list) < 10:
-#     if commits[x].author:
-#         if commits[x].author.login == contributor_list[0]:
-#             commits_list.append(commits[x])
-#             print(len(commits_list))
-#     x = x + 1
-#
-# impact = 0
-# churn = 0
-# avgChurns = []
-# avgImpacts = []
-#
-# for commit in commits_list:
-#     churnRate = min(commit.stats.additions, commit.stats.deletions) / commit.stats.total
-#     churn = churn + churnRate
-#     impactRate = commit.stats.total
-#     impact = impact + impactRate
-#     print("churn rate ", churnRate)
-#     print(commit.stats.additions)
-#     print(commit.stats.deletions)
-#     print(commit.stats.total)
-#
-# avgImpacts.append(impactRate)
-# avgChurns.append(churnRate)
-#
-# layout = go.Layout(
-#     title="Impact vs Churn",
-#     xaxis=dict(
-#         title="Impact"
-#     ),
-#     yaxis=dict(
-#         title="Churn"
-#     )
-# )
-#
-# fig = go.Figure(layout=layout)
-#
-# fig.add_trace(go.Scatter(
-#     x=impacts,
-#     y=churns,
-#     mode='markers'
-# ))
-#
-# # fig = px.scatter(impacts, x="impacts", y="churns")
-#
-# fig.show()
