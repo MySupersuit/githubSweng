@@ -2,13 +2,16 @@ import time
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 import plotly.express as px
 import operator
 import pandas as pd
 from github import Github
 from dash.dependencies import Input, Output, State
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css',
+                        "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css",
+                        'assets/loading.css']
 
 
 def get_top_n_authors_from_last_m_commits(N, m_commits, commits):  # from past nCommits commits
@@ -168,11 +171,17 @@ def visualise_data(df):
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = html.Div([
+    html.H1("Github Repo Analysis", style={'text-align': 'center',
+                                           'padding': '30px'}),
     dcc.Input(id='input-1-state', type='text', placeholder="Repo Owner"),
     dcc.Input(id='input-2-state', type='text', placeholder="Repo Name"),
     html.Button(id='submit-button', n_clicks=0, children='Submit'),
-    html.Div(id='output-state')
-])
+    html.Div(id='output-state'),
+], style={'position': 'absolute',
+          'top': '40%',
+          'left': '50%',
+          'transform': 'translate(-50%,-50%)',
+          'backgroundColor' : 'f6f8fa'})
 
 
 @app.callback(Output('output-state', 'children'),
@@ -183,23 +192,18 @@ def update_output(n_clicks, input1, input2):
     if n_clicks == 0:
         pass
     else:
-        return start(git_token, input1, input2,commits_to_search,
-                     n_authors,commits_per_author)
+        return click_return(input1, input2)
 
 
-git_token = "6092d3c98b5099011f0d7afc9a14d4816146f2fe"
+def click_return(input1, input2):
+    start(git_token, input1, input2, commits_to_search,
+          n_authors, commits_per_author)
+
+
+git_token = ""
 commits_to_search = 1000
-n_authors = 10
-commits_per_author = 5
+n_authors = 20
+commits_per_author = 10
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-
-    # repo_owner = "tensorflow"
-    # repo_name = "tensorflow"
-    # commits_to_search = 1000
-    # n_authors = 20
-    # commits_per_author = 5
-    #
-    # start(git_token, repo_owner, repo_name, commits_to_search,
-    #       n_authors, commits_per_author)
