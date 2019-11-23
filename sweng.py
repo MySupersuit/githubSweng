@@ -3,6 +3,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
+import plotly.graph_objects as go
 import plotly.express as px
 import operator
 import pandas as pd
@@ -164,7 +165,8 @@ def getNumCommits(freqs, name):
 def visualise_data(df):
     fig = px.scatter(df, x="Impact", y="Churn", size="Freqs",
                      hover_name="Author", hover_data=["Author"])
-
+    fig.update_yaxes(range=[-1.1,1.1])
+    fig.update_xaxes(range=[-5,105])
     fig.show()
 
 
@@ -175,6 +177,16 @@ app.layout = html.Div([
                                            'padding': '30px'}),
     dcc.Input(id='input-1-state', type='text', placeholder="Repo Owner"),
     dcc.Input(id='input-2-state', type='text', placeholder="Repo Name"),
+    dcc.Dropdown(
+        id="n_commits_dropdown",
+        options=[
+            {'label':"500 (quickest)", 'value':500},
+            {'label':"1000 (quick)",'value':1000},
+            {'label':"5000 (slow)", 'value':5000},
+            {'label':"10000 (slow)",'value':10000}
+        ],
+        placeholder="Number of commits to analyse"
+    ),
     html.Button(id='submit-button', n_clicks=0, children='Submit'),
     html.Div(id='output-state'),
 ], style={'position': 'absolute',
@@ -187,23 +199,24 @@ app.layout = html.Div([
 @app.callback(Output('output-state', 'children'),
               [Input('submit-button', 'n_clicks')],
               [State('input-1-state', 'value'),
-               State('input-2-state', 'value')])
-def update_output(n_clicks, input1, input2):
+               State('input-2-state', 'value'),
+               State('n_commits_dropdown', 'value')])
+def update_output(n_clicks, input1, input2, n_commits):
     if n_clicks == 0:
         pass
     else:
-        return click_return(input1, input2)
+        return click_return(input1, input2, n_commits)
 
 
-def click_return(input1, input2):
-    start(git_token, input1, input2, commits_to_search,
+def click_return(input1, input2, n_commits):
+    start(git_token, input1, input2, n_commits,
           n_authors, commits_per_author)
 
 
-git_token = ""
-commits_to_search = 1000
+git_token = "bd0966beeec16d9dc27b408cb87a4fdc7e7a6706"
+#commits_to_search = 500
 n_authors = 20
-commits_per_author = 10
+commits_per_author = 7
 
 if __name__ == '__main__':
     app.run_server(debug=True)
