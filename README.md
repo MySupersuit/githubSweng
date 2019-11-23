@@ -4,7 +4,7 @@ The home page is below where you can specify a repository to analyse.
 
 ![Home page](homepage.png)
 
-This app analyses repositories and compares impact of commits and churn of commtis (pretty naively).
+This app analyses repositories and compares impact of commits and churn of commtis (naively).
 
 Sophisticated tools are generally used to analyse these metrics but I feel this is a good general indicator.
 
