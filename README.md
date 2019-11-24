@@ -33,5 +33,6 @@ I used dash and plotly for the graphs and PyGithub as the Github API library
     pip install plotly==4.3.0
     pip install dash==1.6.1
     pip install PyGithub
+    pip install pandas
 
-Operator and pandas were also used
+Operator was also used
