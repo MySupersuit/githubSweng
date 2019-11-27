@@ -25,7 +25,11 @@ This meant I had to manually process the data to get the authors which increased
 
 # To run
 
-Create a github token and insert it into git_token.
+[Create a github token](https://github.com/settings/tokens) and change the git_token variable to it. Then run with
+
+    python sweng.py
+
+which should start it at http://127.0.0.1:8050/
 
 ## Requirements
 I used dash and plotly for the graphs and PyGithub as the Github API library
