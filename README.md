@@ -4,7 +4,7 @@ The home page is below where you can specify a repository to analyse.
 
 ![Home page](homepage.png)
 
-Click image for video demonstration.
+Click image below for video demonstration.
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=YOUTUBE_VIDEO_ID_HERE
 " target="_blank"><img src="http://img.youtube.com/vi/eX-lVTnJORo/0.jpg" 
