@@ -1,6 +1,6 @@
 # SWENG GitHub Data Visualisation
 
-The home page is below where you can specify a repository to analyse.
+The home page is below where you can specify a repository to analyse. (Click for video demonstration).
 
 [![Click image for demonstration](./homepage.png)](https://www.youtube.com/watch?v=eX-lVTnJORo&feature=youtu.be)
 
