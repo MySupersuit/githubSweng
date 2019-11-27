@@ -2,13 +2,7 @@
 
 The home page is below where you can specify a repository to analyse.
 
-![Home page](homepage.png)
-
-Click image below for video demonstration.
-
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=YOUTUBE_VIDEO_ID_HERE
-" target="_blank"><img src="http://img.youtube.com/vi/eX-lVTnJORo/0.jpg" 
-alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
+[![Click image for demonstration](./homepage.png)](https://www.youtube.com/watch?v=eX-lVTnJORo&feature=youtu.be)
 
 This app analyses repositories and compares impact of commits and churn of commtis (naively).
 
